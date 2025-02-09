@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  nginx:
+    build: ./requirements/nginx
+    ports:
+      - "443:443"
+    volumes:
+      - /home/tjoyeux/data/wordpress:/var/www/html
+      - ./requirements/nginx/conf:/etc/nginx/conf.d
+    networks:
+      - inception_network
+
+  wordpress:
+    build: ./requirements/wordpress
+    volumes:
+      - /home/tjoyeux/data/wordpress:/var/www/html
+    environment:
+      - WORDPRESS_DB_HOST=mariadb
+      - WORDPRESS_DB_USER=${MYSQL_USER}
+      - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD}
+      - WORDPRESS_DB_NAME=${MYSQL_DATABASE}
+      - WP_ADMIN_USER=${WP_ADMIN_USER}
+      - WP_ADMIN_PASSWORD=${WP_ADMIN_PASSWORD}
+      - WP_ADMIN_EMAIL=${WP_ADMIN_EMAIL}
+    networks:
+      - inception_network
+
+  mariadb:
+    build: ./requirements/mariadb
+    volumes:
+      - /home/tjoyeux/data/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    networks:
+      - inception_network
+
+volumes:
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/tjoyeux/data/wordpress
+  mysql_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/tjoyeux/data/mysql
+
+networks:
+  inception_network:
