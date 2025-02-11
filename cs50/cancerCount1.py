@@ -18,11 +18,11 @@ with open("cancer.csv", "r") as file:
 			other += 1
 	
 print(f"Number of Lines: {line}")
-print(f"Black: {black} ({black / line * 100}%)")
-print(f"White: {white}")
-print(f"Hispano: {hispanic}")
-print(f"Asian: {asian}")
-print(f"Other: {other}")
+print(f"Black: {black} ({black / line * 100:.2f}%)")
+print(f"White: {white} ({white / line * 100:.2f}%)")
+print(f"Hispano: {hispanic} ({hispanic / line * 100:.2f}%)")
+print(f"Asian: {asian} ({asian / line * 100:.2f}%)")
+print(f"Other: {other} ({other / line * 100:.2f}%)")
 
 #https://cs50.harvard.edu/x/2025/weeks/7/
 # 22'07
