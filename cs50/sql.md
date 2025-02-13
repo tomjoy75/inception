@@ -18,6 +18,8 @@ sqlite3 example.db
 sqlite> .mode csv                   #Configure CSV Mode 
 sqlite> .import example.csv example #Import CSV File into a table
 sqlite> .schema                     #Show architecture of DB
+sqlite> .mode box                   #Show as a tab
+# Also .mode table, .mode markdown, .mode csv
 sqlite> .quit
 ```
 
@@ -31,7 +33,14 @@ SELECT DISTINCT Region FROM example;        -- Show the different regions of exa
 SELECT COUNT(DISTINCT Region) FROM example; -- Number of different regions
 SELECT COUNT(*) FROM example WHERE region = 'Europe'; -- Number of rows in Europe 
 --!!! For Text use only ' and not "
-SELECT COUNT(*) FROM cancer WHERE region = 'North America' AND race = 'Asian'; -- Combinaison North America and Asian
+SELECT COUNT(*) FROM example WHERE region = 'North America' AND race = 'Asian'; -- Combinaison North America and Asian
+-- For escaping ', use ''
+SELECT COUNT(*) FROM example WHERE region LIKE 'North A%' AND race = 'Asian'; -- Combinaison North America and Asian
+SELECT region, COUNT(*) FROM example GROUP BY region ORDER BY COUNT(*); -- Select all the regions and for each show the count (ordered)
+-- ORDER BY #VAR [ASC...DESC]
+SELECT region, COUNT(*) AS n FROM example GROUP BY region ORDER BY n DESC; -- Same as prev, but with an alias
+"  "                            "                       "    LIMIT 1;      -- Just show the first result
+
 ```
 
 ### Builtin Formulas
@@ -51,4 +60,36 @@ ORDER BY
 WHERE
 ...
 ```
-1'01'35
+
+### Changing Data
+`INSERT INTO table (column, ...) VALUES(value, ...);` \
+`DELETE FROM table WHERE condition;` \
+`UPDATE table SET column = value WHERE condition;` \
+*example*
+```sql
+sqlite> INSERT INTO cancer (region, race) VALUES('Mars', NULL); -- when empty us NULL
+sqlite> SELECT region, race, age, COUNT(region) AS n FROM cancer GROUP BY race ORDER by n DESC;
+┌───────────────┬──────────┬─────┬───────┐
+│    Region     │   Race   │ Age │   n   │
+├───────────────┼──────────┼─────┼───────┤
+│ North America │ White    │ 80  │ 44887 │
+│ North America │ Black    │ 34  │ 18005 │
+│ Latin America │ Asian    │ 72  │ 13502 │
+│ Europe        │ Hispanic │ 41  │ 9040  │
+│ Europe        │ Other    │ 71  │ 4511  │
+│ Mars          │          │     │ 1     │
+└───────────────┴──────────┴─────┴───────┘
+sqlite> DELETE FROM cancer WHERE race IS NULL; -- to select the condition NULL, use IS NULL
+sqlite> SELECT region, race, age, COUNT(region) AS n FROM cancer GROUP BY race ORDER by n DESC;
+┌───────────────┬──────────┬─────┬───────┐
+│    Region     │   Race   │ Age │   n   │
+├───────────────┼──────────┼─────┼───────┤
+│ North America │ White    │ 80  │ 44887 │
+│ North America │ Black    │ 34  │ 18005 │
+│ Latin America │ Asian    │ 72  │ 13502 │
+│ Europe        │ Hispanic │ 41  │ 9040  │
+│ Europe        │ Other    │ 71  │ 4511  │
+└───────────────┴──────────┴─────┴───────┘
+UPDATE cancer SET race = 'Weird and strange', region = 'nowhere' WHERE region = 'Latin America';
+```
+1'26'35
