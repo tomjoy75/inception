@@ -92,4 +92,22 @@ sqlite> SELECT region, race, age, COUNT(region) AS n FROM cancer GROUP BY race O
 └───────────────┴──────────┴─────┴───────┘
 UPDATE cancer SET race = 'Weird and strange', region = 'nowhere' WHERE region = 'Latin America';
 ```
+### Example of Create
+```sql
+sqlite> .schema shows
+CREATE TABLE shows (
+    id INTEGER,
+    title TEXT NOT NULL,
+    year NUMERIC,
+    episodes INTEGER,
+    PRIMARY KEY(id)
+);
+sqlite> .schema ratings
+CREATE TABLE ratings (
+    show_id INTEGER NOT NULL,
+    rating REAL NOT NULL,
+    votes INTEGER NOT NULL,
+    FOREIGN KEY(show_id) REFERENCES shows(id)
+);
+```
 1'26'35

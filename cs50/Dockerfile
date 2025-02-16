@@ -8,7 +8,7 @@ RUN apk add --no-cache sqlite
 WORKDIR /data
 
 # Copie du fichier CSV dans le conteneur
-COPY cancer.csv /data/cancer.csv
+COPY chinook.db /data/chinook.db
 
 # Expose SQLite en ligne de commande par défaut
 #ENTRYPOINT ["sqlite3"]
